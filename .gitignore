@@ -1,0 +1,21 @@
+/target
+.vscode/
+.claude/
+CLAUDE.md
+*.log
+debian/cargo_home/
+debian/hotkeys/
+debian/debhelper-build-stamp
+debian/files
+debian/*.substvars
+debian/*.debhelper
+debian/tmp/
+
+# Developer resource configuration (personal overrides)
+dev-resources.toml
+resources/dev-settings.json
+resources/dev-settings.*.json
+resources/dev-log.toml
+resources/dev-data.json
+resources/mine/
+resources/*/mine/
