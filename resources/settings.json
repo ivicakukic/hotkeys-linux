@@ -1,0 +1,37 @@
+{
+  "includes": [
+    "settings.styling.json",
+    "settings.keyboard.json"
+  ],
+
+  "timeout": 5,
+  "feedback": 2,
+  "delay": 1,
+  "color_schemes": [],
+  "text_styles": [],
+
+  "keyboard_layout": "default",
+  "keyboard_layouts": [],
+  "boards": [
+    {
+      "kind": "home",
+      "name": "hotkeys",
+      "detection": "none"
+    }
+  ],
+  "padsets": [],
+  "profiles": [
+    {
+      "name": "default",
+      "boards": [
+        "hotkeys"
+      ],
+      "default": "hotkeys"
+    }
+  ],
+  "layout": {
+    "width": 883,
+    "height": 597,
+    "window_style": "Taskbar"
+  }
+}

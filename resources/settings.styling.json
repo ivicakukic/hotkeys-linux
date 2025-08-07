@@ -1,0 +1,41 @@
+{
+  "color_schemes": [
+    {
+      "name": "default",
+      "opacity": 0.7,
+      "background": "#00007f",
+      "foreground1": "#5454a9",
+      "foreground2": "#dbdbec"
+    },
+    {
+      "name": "Blue",
+      "opacity": 0.8,
+      "background": "#00007f",
+      "foreground1": "#5454a9",
+      "foreground2": "#dbdbec"
+    },
+    {
+      "name": "Violet",
+      "opacity": 0.85,
+      "background": "#4a0d5d",
+      "foreground1": "#855c92",
+      "foreground2": "#e6dde8"
+    },
+    {
+      "name": "LightGray",
+      "opacity": 0.75,
+      "background": "#dbdbec",
+      "foreground1": "#7d7c79",
+      "foreground2": "#3d3c3a"
+    }
+  ],
+  "text_styles": [
+    {
+      "name": "default",
+      "header_font": "Impact Bold 24",
+      "pad_header_font": "Consolas 9",
+      "pad_text_font": "Arial Bold 12",
+      "pad_id_font": "Impact Bold 10"
+    }
+  ]
+}

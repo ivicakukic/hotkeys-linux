@@ -1,0 +1,28 @@
+refresh_rate = "30s"
+
+[appenders]
+[appenders.console]
+kind = "console"
+
+[appenders.file]
+kind = "file"
+path = "$ENV{HOME}/.local/share/hotkeys/hotkeys.log"
+
+[appenders.console.encoder]
+pattern = "{d(%Y-%m-%d %H:%M:%S.%6f)} [{({l}):5.5}] {M}:{L} — {m}{n}"
+
+[appenders.file.encoder]
+pattern = "{d(%Y-%m-%d %H:%M:%S.%6f)} [{({l}):5.5}] {M}:{L} — {m}{n}"
+
+[root]
+level = "warn"
+appenders = ["console", "file"]
+
+[loggers.hotkeys]
+level = "info"
+
+[loggers.input_api]
+level = "info"
+
+[loggers.input_step]
+level = "info"

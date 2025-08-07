@@ -1,0 +1,66 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# Use all available cores for building
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export CARGO_HOME = $(CURDIR)/debian/cargo_home
+
+%:
+	dh $@
+
+override_dh_auto_clean:
+	cargo clean || true
+	rm -rf $(CARGO_HOME)
+
+override_dh_auto_build:
+	# Set up cargo home directory
+	mkdir -p $(CARGO_HOME)
+	# Build in release mode
+	cargo build --release
+
+override_dh_auto_install:
+	# Install binary
+	install -D -m 755 target/release/hotkeys debian/hotkeys/usr/bin/hotkeys
+
+	# Install resources
+	mkdir -p debian/hotkeys/usr/share/hotkeys/icons
+	cp resources/settings.json debian/hotkeys/usr/share/hotkeys/
+	cp resources/settings.*.json debian/hotkeys/usr/share/hotkeys/
+	cp resources/log.toml debian/hotkeys/usr/share/hotkeys/
+	cp resources/icons/*.png debian/hotkeys/usr/share/hotkeys/icons/
+	#cp resources/icons/*.svg debian/hotkeys/usr/share/hotkeys/icons/
+	cp -r resources/schemas debian/hotkeys/usr/share/hotkeys/
+
+	echo '#!/bin/sh' > debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "mkdir -p ~/.config/hotkeys" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "cp /usr/share/hotkeys/settings.json ~/.config/hotkeys/settings.json" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "cp /usr/share/hotkeys/settings.keyboard.json ~/.config/hotkeys/settings.keyboard.json" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "cp /usr/share/hotkeys/settings.styling.json ~/.config/hotkeys/settings.styling.json" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "cp /usr/share/hotkeys/log.toml ~/.config/hotkeys/log.toml" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "mkdir -p ~/.config/hotkeys/icons" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+	echo "echo Configuration files copied to ~/.config/hotkeys" >> debian/hotkeys/usr/share/hotkeys/hotkeys-config
+
+	# Install desktop file
+	install -D -m 644 debian/hotkeys.desktop debian/hotkeys/usr/share/applications/hotkeys.desktop
+
+	# Install icon to system icon theme (hicolor is the fallback theme)
+	install -D -m 644 resources/icons/icon.png debian/hotkeys/usr/share/icons/hicolor/72x72/apps/hotkeys.png
+
+	# Also install to pixmaps for compatibility
+	install -D -m 644 resources/icons/icon.png debian/hotkeys/usr/share/pixmaps/hotkeys.png
+
+	# Install documentation
+	install -D -m 644 README.md debian/hotkeys/usr/share/doc/hotkeys/README.md
+
+override_dh_auto_test:
+	# Skip tests for now as they might require special setup
+	@echo "Skipping tests"
+
+# Don't strip the binary (for better debugging)
+override_dh_strip:
+	@echo "Skipping strip"
+
+# Don't compress documentation files
+override_dh_compress:

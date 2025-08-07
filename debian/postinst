@@ -1,0 +1,53 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    configure)
+        # Update desktop database
+        if which update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database
+        fi
+
+        # Update icon cache for hicolor theme
+        if which gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/icons/hicolor || true
+        fi
+
+        # Setup udev rules for input device access
+        echo "Setting up udev rules for input device access..."
+        
+        # Create udev rule for uinput access
+        cat > /etc/udev/rules.d/99-uinput.rules << 'EOF'
+KERNEL=="uinput", MODE="0660", GROUP="input"
+EOF
+        
+        # Reload udev rules
+        udevadm control --reload-rules 2>/dev/null || true
+        
+        # Add current user to input group (if SUDO_USER is set)
+        if [ -n "$SUDO_USER" ]; then
+            usermod -a -G input "$SUDO_USER" 2>/dev/null || true
+            echo "Added user '$SUDO_USER' to input group."
+        fi
+        
+        # Load uinput module
+        modprobe uinput 2>/dev/null || true
+        
+        echo ""
+        echo "HotKeys has been installed successfully!"
+        echo ""
+        echo "IMPORTANT: You need to log out and log back in (or reboot) for input permissions to take effect."
+        echo ""
+        echo "To get started:"
+        echo "1. Run 'hotkeys' to launch the application or 'hotkeys help' for more information"
+        echo "2. Run '. /usr/share/hotkeys/hotkeys-config' to create user config directory and files"
+        echo "3. See /usr/share/doc/hotkeys/ for documentation"
+        echo ""
+        echo "Note: Full functionality requires X11. Wayland support is limited."
+        echo ""
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

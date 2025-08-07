@@ -1,0 +1,12 @@
+hotkeys (0.1.0-1) unstable; urgency=medium
+
+  * Initial release
+  * Linux keyboard automation tool with GTK4 interface
+  * 3x3 hotkey grid for numeric keypad navigation
+  * Application-specific board configurations
+  * Profile system for different workflows
+  * Modifier key combinations support
+  * X11 active window detection
+  * Support for shortcuts, text input, and automation actions
+
+ -- Ivica Kukic <ivicakukic@gmail.com>  Sun, 25 Aug 2025 12:00:00 +0000

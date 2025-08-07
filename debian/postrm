@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+
+case "$1" in
+    remove|purge)
+        # Update desktop database
+        if which update-desktop-database >/dev/null 2>&1; then
+            update-desktop-database
+        fi
+        
+        # Update icon cache
+        if which gtk-update-icon-cache >/dev/null 2>&1; then
+            gtk-update-icon-cache -f -t /usr/share/pixmaps || true
+        fi
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

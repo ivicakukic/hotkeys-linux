@@ -1,0 +1,30 @@
+[package]
+name = "hotkeys"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+
+[dependencies]
+anyhow = "1.0.98"
+log = "0.4.17"
+log4rs = { version = "1.1.1", features = ["toml_format"] }
+serde = { version = "1.0.144", features = ["derive"] }
+serde_json = "1.0.85"
+paste = "1.0"
+libc = "0.2"
+nix = "0.29"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+dirs = "6.0.0"
+open = "5.3.2"
+
+# UI Framework - GTK4 for Linux graphics
+gtk4 = "0.10.0"
+gdk4 = "0.10.0"
+cairo-rs = { version = "0.21.1", features = ["png"] }
+pango = "0.21.1"
+pangocairo = "0.21.1"
+librsvg = "2.61.0"
+
+[build-dependencies]
+toml = "0.8"

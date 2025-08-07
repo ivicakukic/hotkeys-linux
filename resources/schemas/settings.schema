@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "includes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of additional settings files to include (assumed same directory as this file)"
+    },
+    "timeout": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 5,
+      "maximum": 10,
+      "description": "Timeout in seconds before the board auto-closes"
+    },
+    "feedback": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 2,
+      "maximum": 500,
+      "description": "Visual feedback delay for the pressed pad in milliseconds"
+    },
+    "delay": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 200,
+      "maximum": 1000,
+      "description": "Delay in milliseconds after closing the board and before executing input actions, giving the desktop manager enough time to return focus to the target application. Wayland: use 1ms, X11: use 200ms.",
+      "examples": [
+        1,
+        200
+      ]
+    },
+    "color_schemes": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/ColorScheme"
+      }
+    },
+    "text_styles": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/TextStyle"
+      }
+    },
+    "keyboard_layout": {
+      "type": "string"
+    },
+    "keyboard_layouts": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/KeyboardLayout"
+      }
+    },
+    "boards": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/Board"
+      }
+    },
+    "padsets": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/Padset"
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "definitions.schema#/$defs/Profile"
+      },
+      "description": "Profiles allow grouping of boards. Each profile can have multiple boards and a default board that is shown when the profile is activated. One profile generally mapped to one global system shortcut."
+    },
+    "layout": {
+      "$ref": "definitions.schema#/$defs/Layout"
+    }
+  },
+  "required": [
+    "timeout",
+    "feedback",
+    "delay",
+    "color_schemes",
+    "text_styles",
+    "keyboard_layout",
+    "keyboard_layouts",
+    "boards",
+    "profiles",
+    "layout"
+  ],
+  "additionalProperties": false
+}

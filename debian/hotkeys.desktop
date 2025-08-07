@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=HotKeys
+Comment=Linux keyboard automation tool with 3x3 hotkey grid
+GenericName=Keyboard Automation
+Exec=/usr/bin/hotkeys
+Icon=hotkeys
+Terminal=false
+Type=Application
+Categories=Utility;Accessibility;
+Keywords=keyboard;automation;hotkeys;shortcuts;productivity;
+StartupNotify=true
+StartupWMClass=com.github.ivicakukic.hotkeys
