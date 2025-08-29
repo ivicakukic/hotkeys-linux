@@ -28,7 +28,6 @@ jobs:
 
     - name: Build Debian package
       run: |
-        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
         dpkg-buildpackage -b -uc -us -d
 
     - name: Find generated .deb files
