@@ -26,6 +26,31 @@ jobs:
         sudo apt install -y libpango1.0-dev libatk1.0-dev librsvg2-dev
         sudo apt install -y libx11-dev x11-utils
 
+    - name: Debug pkg-config environment
+      run: |
+        echo "=== PKG-CONFIG DEBUGGING ==="
+        echo "pkg-config version:"
+        pkg-config --version
+        echo ""
+        echo "pkg-config search paths:"
+        pkg-config --variable pc_path pkg-config || echo "Failed to get pc_path"
+        echo ""
+        echo "Looking for cairo.pc in common locations:"
+        find /usr -name "cairo.pc" 2>/dev/null || echo "cairo.pc not found in /usr"
+        echo ""
+        echo "Cairo package status:"
+        dpkg -l | grep cairo || echo "No cairo packages found"
+        echo ""
+        echo "Cairo development files:"
+        dpkg -L libcairo2-dev | grep "\.pc$" || echo "No .pc files in libcairo2-dev"
+        echo ""
+        echo "PKG_CONFIG_PATH environment:"
+        echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH"
+        echo ""
+        echo "Testing cairo detection manually:"
+        pkg-config --exists cairo && echo "cairo: FOUND" || echo "cairo: NOT FOUND"
+        pkg-config --modversion cairo 2>/dev/null || echo "Cannot get cairo version"
+    
     - name: Build Debian package
       run: |
         dpkg-buildpackage -b -uc -us -d
