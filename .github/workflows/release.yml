@@ -27,8 +27,6 @@ jobs:
         sudo apt install -y libx11-dev x11-utils
 
     - name: Build Debian package
-      env:
-        PKG_CONFIG_PATH: /usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
       run: |
         dpkg-buildpackage -b -uc -us -d
 
