@@ -64,7 +64,7 @@ If you have the `.deb` package available:
 # Install build dependencies (one-time setup)
 sudo apt install debhelper devscripts build-essential
 sudo apt install libgtk-4-dev libgdk-pixbuf-2.0-dev libcairo2-dev
-sudo apt install libpango1.0-dev libatk1.0-dev librsvg2-dev pkg-config
+sudo apt install libpango1.0-dev libatk1.0-dev pkg-config
 sudo apt install libx11-dev x11-utils
 
 # Build the package (from project root)

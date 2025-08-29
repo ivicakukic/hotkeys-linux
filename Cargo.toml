@@ -24,7 +24,7 @@ gdk4 = "0.10.0"
 cairo-rs = { version = "0.21.1", features = ["png"] }
 pango = "0.21.1"
 pangocairo = "0.21.1"
-librsvg = "=2.58.0"
+resvg = "0.44"
 
 [build-dependencies]
 toml = "0.8"

@@ -265,21 +265,48 @@ impl<'a> BoardRenderer<'a> {
                     }
                 }
             } else if icon_path.ends_with(".svg") {
-                // Load SVG icon using rsvg
-                if let Ok(mut handle) = rsvg::Loader::new().read_path(&icon_path) {
-
+                // Load SVG icon using resvg
+                if let Ok(svg_data) = std::fs::read(&icon_path) {
                     let color_str = format!("rgb({}, {}, {})", (red * 255.0) as u8, (green * 255.0) as u8, (blue * 255.0) as u8);
-                    let stylesheet = format!(".board-s {{ stroke: {}; }}  .board-f {{ fill: {}; }}  .board-sf {{ stroke: {}; fill: {}; }} ", color_str, color_str , color_str, color_str);
-                    handle.set_stylesheet(&stylesheet).expect("Failed to set stylesheet");
+                    let stylesheet = format!(".board-s {{ stroke: {}; }}  .board-f {{ fill: {}; }}  .board-sf {{ stroke: {}; fill: {}; }} ", color_str, color_str, color_str, color_str);
 
-                    let renderer = rsvg::CairoRenderer::new(&handle);
-
-                    ctx.save().unwrap();
-                    ctx.translate(x, y);
-                    renderer.render_document(ctx, &cairo::Rectangle::new(0.0, 0.0, size, size)).unwrap();
-                    ctx.restore().unwrap();
+                    // Use usvg's built-in stylesheet injection
+                    let mut options = resvg::usvg::Options::default();
+                    options.style_sheet = Some(stylesheet);
+                    
+                    if let Ok(tree) = resvg::usvg::Tree::from_data(&svg_data, &options) {
+                        let pixmap_size = tree.size().to_int_size();
+                        let scale_x = size / pixmap_size.width() as f64;
+                        let scale_y = size / pixmap_size.height() as f64;
+                        let scale = scale_x.min(scale_y);
+                        
+                        if let Some(mut pixmap) = resvg::tiny_skia::Pixmap::new(size as u32, size as u32) {
+                            let transform = resvg::tiny_skia::Transform::from_scale(scale as f32, scale as f32);
+                            resvg::render(&tree, transform, &mut pixmap.as_mut());
+                            
+                            // Convert tiny_skia pixmap to Cairo surface
+                            ctx.save().unwrap();
+                            ctx.translate(x, y);
+                            
+                            // Create Cairo ImageSurface from pixmap data
+                            if let Ok(surface) = cairo::ImageSurface::create_for_data(
+                                pixmap.data().to_vec(),
+                                cairo::Format::ARgb32,
+                                size as i32,
+                                size as i32,
+                                cairo::Format::ARgb32.stride_for_width(size as u32).unwrap(),
+                            ) {
+                                ctx.set_source_surface(&surface, 0.0, 0.0).unwrap();
+                                ctx.paint().unwrap();
+                            }
+                            
+                            ctx.restore().unwrap();
+                        }
+                    } else {
+                        log::warn!("Failed to parse SVG: {:?}", icon_path);
+                    }
                 } else {
-                    log::warn!("Failed to load SVG icon: {:?}", icon_path);
+                    log::warn!("Failed to read SVG file: {:?}", icon_path);
                 }
             }
 
