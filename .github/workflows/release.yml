@@ -1,0 +1,76 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on version tags like v0.1.0, v0.2.0-2, etc.
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: stable
+    
+    - name: Install build dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y debhelper devscripts build-essential
+        sudo apt install -y libgtk-4-dev libgdk-pixbuf-2.0-dev libcairo2-dev
+        sudo apt install -y libpango1.0-dev libatk1.0-dev librsvg2-dev pkg-config
+        sudo apt install -y libx11-dev x11-utils
+    
+    - name: Build Debian package
+      run: |
+        dpkg-buildpackage -b -uc -us -d
+    
+    - name: Find generated .deb files
+      id: find_deb
+      run: |
+        DEB_FILES=$(ls ../*.deb)
+        echo "deb_files=$DEB_FILES" >> $GITHUB_OUTPUT
+        echo "Found .deb files: $DEB_FILES"
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: '../*.deb'
+        draft: false
+        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+        generate_release_notes: true
+        body: |
+          ## Installation
+          
+          Download the `.deb` package for your architecture and install:
+          
+          ```bash
+          # Download and install (replace with actual filename)
+          wget https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/hotkeys_*_amd64.deb
+          sudo dpkg -i hotkeys_*_amd64.deb
+          sudo apt-get install -f  # Fix any missing dependencies
+          ```
+          
+          ## Setup Global Shortcut
+          
+          After installation, set up a global shortcut in GNOME Settings:
+          - **Name**: `hotkeys`
+          - **Command**: `hotkeys`
+          - **Shortcut**: `Ctrl+Alt+Insert` (or your preferred combination)
+          
+          See [README.md](https://github.com/${{ github.repository }}/blob/main/README.md) for detailed setup instructions.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: debian-packages
+        path: '../*.deb'
+        retention-days: 30
